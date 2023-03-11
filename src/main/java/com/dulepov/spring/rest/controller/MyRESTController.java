@@ -2,15 +2,19 @@ package com.dulepov.spring.rest.controller;
 
 
 import com.dulepov.spring.rest.entity.Employee;
-import com.dulepov.spring.rest.exception_handling.EmployeeIncorrectData;
 import com.dulepov.spring.rest.exception_handling.NoSuchEmployeeException;
 import com.dulepov.spring.rest.service.EmployeeService;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -43,13 +47,29 @@ public class MyRESTController {
 
     //CREATE
     @PostMapping("/employees")	//работает только с POST-запросом
-    public Employee addNewEmployee(@RequestBody Employee employee) {
+    public Employee addNewEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
+
+        //проверка валидации
+        if (bindingResult.hasErrors()){
+            //получение ошибок валидации
+            List<FieldError> validErrors=bindingResult.getFieldErrors();
+            List<String> fields = new ArrayList<>();
+
+            for (FieldError error:validErrors){
+                fields.add(error.getField()+" - "+error.getDefaultMessage());
+            }
+
+            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", fields));
+        }
+        employeeService.saveEmployee(employee);
+        return employee;
+
         //в теле не прописываем id, иначе если он будет то произойдет попытка обновить пользователя, см.EmployeeDAOImpl.saveEmployee
         //сохраняем уже сериализованный объект в базу
-        employeeService.saveEmployee(employee);
+//        employeeService.saveEmployee(employee);
 
         //выводим в response, но уже сохраненный вариант из базы (c id)
-        return employee;
+//        return employee;
     }
 
     //UPDATE

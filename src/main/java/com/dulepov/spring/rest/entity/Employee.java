@@ -2,6 +2,7 @@ package com.dulepov.spring.rest.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "employees")
@@ -12,10 +13,12 @@ public class Employee {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "name")
+    @Column(name = "name")  //из БД
+    @NotEmpty   //для валидации
     private String name;
 
     @Column(name = "surname")
+    @NotEmpty
     private String surname;
 
     @Column(name = "department")
