@@ -53,13 +53,13 @@ public class MyRESTController {
         if (bindingResult.hasErrors()){
             //получение ошибок валидации
             List<FieldError> validErrors=bindingResult.getFieldErrors();
-            List<String> fields = new ArrayList<>();
+            List<String> errorsDescList = new ArrayList<>();
 
             for (FieldError error:validErrors){
-                fields.add(error.getField()+" - "+error.getDefaultMessage());
+                errorsDescList.add(error.getField()+" - "+error.getDefaultMessage());
             }
 
-            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", fields));
+            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
         }
         employeeService.saveEmployee(employee);
         return employee;

@@ -29,7 +29,10 @@ public class MyConfig {
             throw new RuntimeException(e);
         }
 
-        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/my_db?useSSL=false&amp&serverTimezone=UTC&allowPublicKeyRetrieval=true");
+        dataSource.setJdbcUrl("jdbc:mysql://localhost:3306/my_db?useSSL=false" +
+                "&amp&serverTimezone=UTC" +
+                "&allowPublicKeyRetrieval=true" +
+                "&createDatabaseIfNotExist=true");
         dataSource.setUser("bestuser");     //Логин и пароль для доступа в БД(был создан отдельный дев.юзер для доступа))
         dataSource.setPassword("bestuser");
 
@@ -45,6 +48,7 @@ public class MyConfig {
         Properties prop=new Properties();
         prop.setProperty("hibernate.dialect","org.hibernate.dialect.MySQLDialect");
         prop.setProperty("hibernate.show_sql", "true");
+        prop.setProperty("hibernate.hbm2ddl.auto","create");    //Возможность создавать таблицы по entity (без предварительного создания их прямо в БД)
 
         sessionFactory.setHibernateProperties(prop);
 
@@ -55,7 +59,6 @@ public class MyConfig {
     public HibernateTransactionManager hibernateTransactionManager(){
         HibernateTransactionManager hibernateTransactionManager=new HibernateTransactionManager();
         hibernateTransactionManager.setSessionFactory(sessionFactory().getObject());
-
         return hibernateTransactionManager;
     }
 
