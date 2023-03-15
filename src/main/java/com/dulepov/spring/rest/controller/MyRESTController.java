@@ -61,15 +61,13 @@ public class MyRESTController {
 
             throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
         }
-        employeeService.saveEmployee(employee);
-        return employee;
 
         //в теле не прописываем id, иначе если он будет то произойдет попытка обновить пользователя, см.EmployeeDAOImpl.saveEmployee
         //сохраняем уже сериализованный объект в базу
-//        employeeService.saveEmployee(employee);
+        employeeService.saveEmployee(employee);
 
         //выводим в response, но уже сохраненный вариант из базы (c id)
-//        return employee;
+        return employee;
     }
 
     //UPDATE

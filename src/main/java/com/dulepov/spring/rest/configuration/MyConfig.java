@@ -48,7 +48,7 @@ public class MyConfig {
         Properties prop=new Properties();
         prop.setProperty("hibernate.dialect","org.hibernate.dialect.MySQLDialect");
         prop.setProperty("hibernate.show_sql", "true");
-        prop.setProperty("hibernate.hbm2ddl.auto","create");    //Возможность создавать таблицы по entity (без предварительного создания их прямо в БД)
+        prop.setProperty("hibernate.hbm2ddl.auto","update");    //Возможность создавать таблицы по entity (без предварительного создания их прямо в БД)
 
         sessionFactory.setHibernateProperties(prop);
 

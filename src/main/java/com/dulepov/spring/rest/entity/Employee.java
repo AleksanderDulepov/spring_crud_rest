@@ -27,15 +27,19 @@ public class Employee {
     @Column(name = "salary")
     private int salary;
 
+    @Column(name = "email")
+    private String email;
 
     public Employee() {
     }
 
-    public Employee(String name, String surname, String department, int salary) {
+    public Employee(int id, String name, String surname, String department, int salary, String email) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.department = department;
         this.salary = salary;
+        this.email = email;
     }
 
     public int getId() {
@@ -76,5 +80,13 @@ public class Employee {
 
     public void setSalary(int salary) {
         this.salary = salary;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
