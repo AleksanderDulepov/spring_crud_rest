@@ -3,6 +3,7 @@ package com.dulepov.spring.rest.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "employees")
@@ -14,11 +15,11 @@ public class Employee {
     private int id;
 
     @Column(name = "name")  //из БД
-    @NotEmpty   //для валидации
-    private String name;
+    @NotEmpty(message="Это поле обязательно для заполнения")   //для валидации
+    private String name;    //так будет в json
 
     @Column(name = "surname")
-    @NotEmpty
+    @NotEmpty(message="Это поле обязательно для заполнения")
     private String surname;
 
     @Column(name = "department")
@@ -30,16 +31,21 @@ public class Employee {
     @Column(name = "email")
     private String email;
 
+    @Column(name = "phone")
+    @Pattern(regexp="\\d{3}-\\d{2}-\\d{2}", message="please use pattern XXX-XX-XX")
+    private String phoneNumber;
+
     public Employee() {
     }
 
-    public Employee(int id, String name, String surname, String department, int salary, String email) {
+    public Employee(int id, String name, String surname, String department, int salary, String email, String phoneNumber) {
         this.id = id;
         this.name = name;
         this.surname = surname;
         this.department = department;
         this.salary = salary;
         this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     public int getId() {
@@ -89,4 +95,13 @@ public class Employee {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }
+
