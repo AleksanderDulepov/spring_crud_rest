@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class MyRESTController {
 
     //UPDATE
     @PutMapping("/employees/{empId}")	//работает только с PUT-запросом
-    public Employee updateEmployee(@PathVariable int empId, @RequestBody Employee employee){
+    public Employee updateEmployee(@PathVariable int empId, @RequestBody Employee employee){    //добавить @Valid из create!!!!!
 
         //проверка существования работника
         Employee emp=employeeService.getCurrentEmployee(empId);

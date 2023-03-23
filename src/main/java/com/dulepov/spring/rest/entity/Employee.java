@@ -1,9 +1,9 @@
 package com.dulepov.spring.rest.entity;
 
 
+import com.dulepov.spring.rest.validation.CheckEmail;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 
 @Entity
 @Table(name = "employees")
@@ -29,11 +29,13 @@ public class Employee {
     private int salary;
 
     @Column(name = "email")
+    @CheckEmail(value = "mail.ru", message="Почта должна заканчиваться на mail.ru")    //кастомный валидатор
     private String email;
 
     @Column(name = "phone")
     @Pattern(regexp="\\d{3}-\\d{2}-\\d{2}", message="please use pattern XXX-XX-XX")
     private String phoneNumber;
+
 
     public Employee() {
     }
