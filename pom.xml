@@ -93,6 +93,13 @@
       <version>8.0.0.Final</version>
     </dependency>
 
+    <dependency>
+      <groupId>com.github.java-json-tools</groupId>
+      <artifactId>json-patch</artifactId>
+      <version>1.12</version>
+    </dependency>
+
+
 
   </dependencies>
 

@@ -1,5 +1,9 @@
 package com.dulepov.spring.rest.configuration;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.hibernate.SessionFactory;
 import org.springframework.context.annotation.Bean;
@@ -61,6 +65,19 @@ public class MyConfig {
         hibernateTransactionManager.setSessionFactory(sessionFactory().getObject());
         return hibernateTransactionManager;
     }
+
+    //Бины для бизнес-логики
+    @Bean
+    public ObjectMapper objectMapper(){
+        ObjectMapper objectMapper= new ObjectMapper()
+                .setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .findAndRegisterModules();
+        return objectMapper;
+    }
+
+
 
 
 

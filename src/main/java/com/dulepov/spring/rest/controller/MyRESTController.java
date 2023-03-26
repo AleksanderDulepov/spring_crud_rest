@@ -3,7 +3,16 @@ package com.dulepov.spring.rest.controller;
 
 import com.dulepov.spring.rest.entity.Employee;
 import com.dulepov.spring.rest.exception_handling.NoSuchEmployeeException;
+import com.dulepov.spring.rest.service.CommonService;
 import com.dulepov.spring.rest.service.EmployeeService;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +34,10 @@ public class MyRESTController {
     //вызываем Service как компонент в spring контейнере (в данном случае через интерфейс, но можно и класс EmployeeServiceImpl)
     @Autowired
     private EmployeeService employeeService;
+
+    //вызываем Service как компонент в spring контейнере
+    @Autowired
+    private CommonService commonService;
 
     //READ ALL
     @GetMapping("/employees")
@@ -73,7 +86,21 @@ public class MyRESTController {
 
     //UPDATE
     @PutMapping("/employees/{empId}")	//работает только с PUT-запросом
-    public Employee updateEmployee(@PathVariable int empId, @RequestBody Employee employee){    //добавить @Valid из create!!!!!
+    public Employee updateEmployee(@PathVariable int empId, @Valid @RequestBody Employee employee, BindingResult bindingResult){
+
+        //проверка валидации
+        if (bindingResult.hasErrors()){
+            //получение ошибок валидации
+            List<FieldError> validErrors=bindingResult.getFieldErrors();
+            List<String> errorsDescList = new ArrayList<>();
+
+            for (FieldError error:validErrors){
+                errorsDescList.add(error.getField()+" - "+error.getDefaultMessage());
+            }
+
+            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
+        }
+
 
         //проверка существования работника
         Employee emp=employeeService.getCurrentEmployee(empId);
@@ -85,6 +112,36 @@ public class MyRESTController {
         return employee;
 
     }
+
+
+    //PARTIAL UPDATE
+    @PatchMapping(path="/employees/{empId}")	//работает только с PATCH-запросом
+    public ResponseEntity<Employee> partialUpdateEmployee(@PathVariable int empId, @RequestBody JsonMergePatch patchJson) {
+
+        //проверка существования работника
+        Employee emp=employeeService.getCurrentEmployee(empId);
+        if (emp==null){
+            throw new NoSuchEmployeeException("Работника с id="+empId+" не существует");	//см. класс обработки ошибок GlobalExceptionHandler
+        }
+
+        //применяем частичное обновление-изменяем обьект по переданному json
+        Employee empPatched=commonService.applyPatchToEmployee(patchJson, emp, Employee.class);
+
+        //если в json будет передан id, то будет происходить попытка его обновить и возникнет ошибка
+        //чтобы этого избежать либо добавить кастомную валидацию на отсутствие id
+        //либо после перезаписи на переданный id повторно присвоить ему изначальный id приудительно
+        empPatched.setId(empId);
+
+        //сохраняем обьект в базу
+        employeeService.saveEmployee(empPatched);
+
+        return ResponseEntity.ok(empPatched);
+
+
+
+    }
+
+
 
     //DELETE
     @DeleteMapping("/employees/{empId}")	//работает только с DELETE-запросом

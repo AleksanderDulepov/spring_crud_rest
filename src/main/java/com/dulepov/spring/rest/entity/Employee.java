@@ -15,7 +15,7 @@ public class Employee {
     private int id;
 
     @Column(name = "name")  //из БД
-    @NotEmpty(message="Это поле обязательно для заполнения")   //для валидации
+    @NotEmpty(message="Это поле обязательно для заполнения")   //базовая валидация
     private String name;    //так будет в json
 
     @Column(name = "surname")
@@ -29,7 +29,9 @@ public class Employee {
     private int salary;
 
     @Column(name = "email")
-    @CheckEmail(value = "mail.ru", message="Почта должна заканчиваться на mail.ru")    //кастомный валидатор
+
+    @NotEmpty(message="Это поле обязательно для заполнения")
+    @CheckEmail(value = "mail.ru", message="Почта должна заканчиваться на mail.ru")    //кастомная валидация
     private String email;
 
     @Column(name = "phone")
