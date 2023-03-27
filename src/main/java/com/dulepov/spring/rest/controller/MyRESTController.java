@@ -13,19 +13,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
-import jakarta.validation.Valid;
-import jakarta.validation.ValidationException;
+import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api")
@@ -132,12 +134,27 @@ public class MyRESTController {
         //либо после перезаписи на переданный id повторно присвоить ему изначальный id приудительно
         empPatched.setId(empId);
 
+        //принудительная валидация
+        Validator validator;
+        ValidatorFactory validatorFactory= Validation.buildDefaultValidatorFactory();
+        validator=validatorFactory.getValidator();
+
+        Set<ConstraintViolation<Employee>> validationResultSet= validator.validate(empPatched);
+
+        if (validationResultSet.size()>0){
+            List<String> errorsDescList = new ArrayList<>();
+
+            for (ConstraintViolation<Employee> item:validationResultSet){
+                errorsDescList.add(item.getPropertyPath().toString()+" - "+item.getMessage());
+            }
+            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
+        }
+
+
         //сохраняем обьект в базу
         employeeService.saveEmployee(empPatched);
 
         return ResponseEntity.ok(empPatched);
-
-
 
     }
 
