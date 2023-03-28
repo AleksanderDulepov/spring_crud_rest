@@ -1,15 +1,18 @@
 package com.dulepov.spring.rest.service;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonpatch.JsonPatchException;
 import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class CommonServiceImpl implements CommonService{
@@ -39,4 +42,22 @@ public class CommonServiceImpl implements CommonService{
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    @Transactional
+    public void parseValidationResults(BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            //получение ошибок валидации
+            List<FieldError> validErrors=bindingResult.getFieldErrors();
+            List<String> errorsDescList=new ArrayList<>();
+
+            for (FieldError error: validErrors){
+                errorsDescList.add(error.getField()+" "+error.getDefaultMessage());
+            }
+
+            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
+        }
+    }
+
 }

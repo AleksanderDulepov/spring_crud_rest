@@ -66,17 +66,7 @@ public class MyRESTController {
     public Employee addNewEmployee(@Valid @RequestBody Employee employee, BindingResult bindingResult) {
 
         //проверка валидации
-        if (bindingResult.hasErrors()){
-            //получение ошибок валидации
-            List<FieldError> validErrors=bindingResult.getFieldErrors();
-            List<String> errorsDescList = new ArrayList<>();
-
-            for (FieldError error:validErrors){
-                errorsDescList.add(error.getField()+" - "+error.getDefaultMessage());
-            }
-
-            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
-        }
+        commonService.parseValidationResults(bindingResult);
 
         //в теле не прописываем id, иначе если он будет то произойдет попытка обновить пользователя, см.EmployeeDAOImpl.saveEmployee
         //сохраняем уже сериализованный объект в базу
@@ -91,18 +81,7 @@ public class MyRESTController {
     public Employee updateEmployee(@PathVariable int empId, @Valid @RequestBody Employee employee, BindingResult bindingResult){
 
         //проверка валидации
-        if (bindingResult.hasErrors()){
-            //получение ошибок валидации
-            List<FieldError> validErrors=bindingResult.getFieldErrors();
-            List<String> errorsDescList = new ArrayList<>();
-
-            for (FieldError error:validErrors){
-                errorsDescList.add(error.getField()+" - "+error.getDefaultMessage());
-            }
-
-            throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
-        }
-
+        commonService.parseValidationResults(bindingResult);
 
         //проверка существования работника
         Employee emp=employeeService.getCurrentEmployee(empId);
