@@ -129,15 +129,11 @@ public class MyRESTController {
             throw new ValidationException("Ошибки валидации для следующих полей: "+String.join(", ", errorsDescList));
         }
 
-
         //сохраняем обьект в базу
         employeeService.saveEmployee(empPatched);
 
         return ResponseEntity.ok(empPatched);
-
     }
-
-
 
     //DELETE
     @DeleteMapping("/employees/{empId}")	//работает только с DELETE-запросом

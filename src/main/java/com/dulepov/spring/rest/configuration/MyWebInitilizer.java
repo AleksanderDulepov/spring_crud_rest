@@ -18,5 +18,5 @@ public class MyWebInitilizer extends AbstractAnnotationConfigDispatcherServletIn
     @Override
     protected String[] getServletMappings() {
         return new String[] {"/"};
-    }
+    }   //общий сегмент url
 }
