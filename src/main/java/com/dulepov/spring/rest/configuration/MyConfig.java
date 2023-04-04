@@ -19,7 +19,7 @@ import java.beans.PropertyVetoException;
 import java.util.Properties;
 
 @Configuration
-@ComponentScan(basePackages = "com.dulepov.spring.rest")    //Меняем на название пакеты под main/java
+@ComponentScan(basePackages = "com.dulepov.spring.rest")    //Меняем на название пакетов под main/java
 @EnableWebMvc
 @EnableTransactionManagement
 public class MyConfig {
@@ -76,10 +76,4 @@ public class MyConfig {
                 .findAndRegisterModules();
         return objectMapper;
     }
-
-
-
-
-
-
 }

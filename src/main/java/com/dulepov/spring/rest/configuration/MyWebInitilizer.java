@@ -2,6 +2,8 @@ package com.dulepov.spring.rest.configuration;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+//реализация Dispatcher Servlet
+
 public class MyWebInitilizer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 
@@ -12,6 +14,7 @@ public class MyWebInitilizer extends AbstractAnnotationConfigDispatcherServletIn
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
+
         return new Class[] {MyConfig.class};
     }
 
