@@ -1,6 +1,8 @@
 package com.dulepov.spring.rest.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,6 +11,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 
 //в целом это шляпа, так как данные аутентификации захардкожены
@@ -17,7 +23,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class MySecurityConfig {
-
 
     //бин для аутентификации (Basic auth через username and password-для запроса из postman нужно добавить эти credentials)
     @Bean
@@ -45,13 +50,25 @@ public class MySecurityConfig {
     //бин для авторизации
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .requestMatchers(HttpMethod.GET,"/employees").hasAnyRole("USER", "ADMIN")
-                .requestMatchers(HttpMethod.GET,"/employees/**").hasAnyRole("USER", "ADMIN")
-                .requestMatchers(HttpMethod.POST,"/employees").hasRole("ADMIN")
-                .and().formLogin().permitAll();
+
+        http
+                .httpBasic()    //basic-аутентификация
+                .and()
+                .csrf().disable()   //удаляет проверку csrf для методов put, post, patch, delete
+
+                .authorizeHttpRequests()    //предоставить разрешения для следующих url
+                .requestMatchers(HttpMethod.GET,"/api/employees").permitAll()  //разрешает доступ всем, даже не аутентифицированным
+                .requestMatchers(HttpMethod.GET,"/api/employees/**").authenticated()//разрешает доступ всем ролям, но только аутентифифированным
+                .requestMatchers(HttpMethod.POST,"/api/employees").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT,"/api/employees/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH,"/api/employees/**").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE,"/api/employees/**").hasRole("ADMIN");
+
+
         return http.build();
     }
+
+
 
 
 }
