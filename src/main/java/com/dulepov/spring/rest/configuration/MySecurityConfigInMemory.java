@@ -1,8 +1,6 @@
 package com.dulepov.spring.rest.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,13 +13,10 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
-//в целом это шляпа, так как данные аутентификации захардкожены
-//хранение в паролей в БД будет далее
-
-@Configuration
-@EnableWebSecurity
-public class MySecurityConfig {
+//для теста MySecurityConfigInDBStorage
+//@Configuration
+//@EnableWebSecurity
+public class MySecurityConfigInMemory {
 
     //бин, переопределящий базовый password encoder на BCrypt (защита лучше чем MD5 и SHA)
     @Bean
@@ -30,6 +25,7 @@ public class MySecurityConfig {
     }
 
     //бин для аутентификации (Basic auth через username and password-для запроса из postman нужно добавить эти credentials)
+    //в целом это шляпа, так как данные аутентификации захардкожены и хранятся в памяти, а не в БД
     @Bean
     public UserDetailsManager userDetailsService(PasswordEncoder passwordEncoder) {
         UserDetails user = User.withUsername("user")
