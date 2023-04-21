@@ -2,13 +2,9 @@ package com.dulepov.spring.rest.entity;
 
 import jakarta.persistence.*;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Table(name = "authorities")
-public class Role implements Serializable {
+public class Role {
 
 
     //для проверки springом credentials самостоятельно
@@ -34,7 +30,5 @@ public class Role implements Serializable {
     @Id //multiple PK
     @Column(name = "authority")
     private String authority;
-
-
 
 }

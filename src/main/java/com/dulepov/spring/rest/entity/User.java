@@ -19,7 +19,7 @@ import java.util.List;
 //        ('alex', '{noop}alex', 1),
 //        ('enemy', '{noop}enemy', 1);
 
-        //{noop} - тип шифрования
+        //{noop}, {bcrypt} - тип шифрования
         //enabled 1-активный пользователь, 0-неактивный
 
 @Entity
